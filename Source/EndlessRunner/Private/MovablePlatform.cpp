@@ -3,6 +3,9 @@
 
 #include "MovablePlatform.h"
 
+#include "SpeedManager.h"
+
+
 // Sets default values
 AMovablePlatform::AMovablePlatform()
 {
@@ -32,10 +35,10 @@ void AMovablePlatform::BeginPlay()
 void AMovablePlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (bIsActive)
 	{
-		CurrentLocation.Y -= Speed * DeltaTime;
+		CurrentLocation.Y -= ASpeedManager::DifficultySpeed * DeltaTime;
 		SetActorLocation(CurrentLocation);
 		
 	}

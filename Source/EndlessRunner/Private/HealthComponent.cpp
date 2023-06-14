@@ -3,19 +3,22 @@
 
 #include "HealthComponent.h"
 
+#include "EndlessRunner/EndlessRunnerCharacter.h"
+#include "HighScoreSaveGame.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
+	
 	DeafaultHealth = 3;
 	CurrentHealth = DeafaultHealth;
 
 	bCanTakeDamage = true;
 
-	InvincibilityDuration = 3;
+	InvincibilityDuration = 1.f;
 }
 
 
@@ -36,6 +39,38 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDam
 	if (bCanTakeDamage)
 	{
 		CurrentHealth = CurrentHealth - Damage;
+
+		if (CurrentHealth <= 0)
+		{
+			if (AEndlessRunnerCharacter* Player = Cast<AEndlessRunnerCharacter>(DamagedActor))
+			{
+				if (UHighScoreSaveGame* LoadGameInstance = Cast<UHighScoreSaveGame>(UGameplayStatics::LoadGameFromSlot("HighScoreSlot", 0)))
+				{
+					UHighScoreSaveGame* SaveGameInstance = Cast<UHighScoreSaveGame>(UGameplayStatics::CreateSaveGameObject(UHighScoreSaveGame::StaticClass()));
+
+					if (LoadGameInstance->HighScores.Num() > 0)
+					{
+						//for (int i = 0; i < LoadGameInstance->HighScores.Num(); i++)
+						SaveGameInstance->HighScores = LoadGameInstance->HighScores;
+					}
+					
+					SaveGameInstance->HighScores.Add(Player->HighScore);
+					UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("HighScoreSlot"), 0);
+					
+				}
+				else
+				{
+					UHighScoreSaveGame* SaveGameInstance = Cast<UHighScoreSaveGame>(UGameplayStatics::CreateSaveGameObject(UHighScoreSaveGame::StaticClass()));
+					SaveGameInstance->HighScores.Add(Player->HighScore);
+					UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("HighScoreSlot"), 0);
+				}
+
+				//UE_LOG(LogTemp, Warning, TEXT("HighScore: %f"), SaveGameInstance->HighScores[0]);
+			}
+			
+			DamagedActor->Destroy();
+		}
+		
 		UE_LOG(LogTemp, Warning, TEXT("Current Health is: %f"), CurrentHealth);
 		bCanTakeDamage = false;
 		GetWorld()->GetTimerManager().SetTimer(InvincibilityTimer, this, &UHealthComponent::SetDamageBool, InvincibilityDuration, false);

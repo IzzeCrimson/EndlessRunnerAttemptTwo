@@ -15,16 +15,22 @@ class ENDLESSRUNNER_API UHealthComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UHealthComponent();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	float DeafaultHealth;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth;
+
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
+	
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
-	float DeafaultHealth;
-
-	UPROPERTY(BlueprintReadOnly)
-	float CurrentHealth;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bCanTakeDamage;
@@ -33,8 +39,7 @@ protected:
 
 	float InvincibilityDuration;
 
-	UFUNCTION()
-	void TakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	
 
 	UFUNCTION()
 	void SetDamageBool();

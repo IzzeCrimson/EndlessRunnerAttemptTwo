@@ -63,13 +63,14 @@ void AEndlessRunnerCharacter::BeginPlay()
 	ThisCapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &AEndlessRunnerCharacter::OnOverlapBegin);
 	
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+	// if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	// {
+	// 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	// 	{
+	// 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	// 	}
+	// }
+	
 }
 
 void AEndlessRunnerCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
@@ -87,7 +88,8 @@ void AEndlessRunnerCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActo
 void AEndlessRunnerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
+	HighScore += 1;
 	//AddMovementInput(FVector(0, MovementSpeed, 0), 1);
 	
 }
@@ -96,24 +98,24 @@ void AEndlessRunnerCharacter::Tick(float DeltaTime)
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void AEndlessRunnerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
-{
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEndlessRunnerCharacter::Move);
-
-		//Looking
-		//EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AEndlessRunnerCharacter::Look);
-
-	}
-
-}
+// void AEndlessRunnerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+// {
+// 	// Set up action bindings
+// 	 if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+// 	 	
+// 	 	//Jumping
+// 	 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+// 	 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+// 	
+// 	 	//Moving
+// 	 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEndlessRunnerCharacter::Move);
+// 	
+// 		//Looking
+// 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AEndlessRunnerCharacter::Look);
+// 	
+// 	}
+//
+// }
 
 void AEndlessRunnerCharacter::Move(const FInputActionValue& Value)
 {
@@ -151,6 +153,7 @@ void AEndlessRunnerCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
+
 
 
 

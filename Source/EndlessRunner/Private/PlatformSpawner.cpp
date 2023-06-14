@@ -22,7 +22,7 @@ void APlatformSpawner::BeginPlay()
 
 	Location = GetActorLocation();
 	Rotation = GetActorRotation();
-	SpawnPlatform();
+	//SpawnPlatform();
 
 	BoxCollider->OnComponentEndOverlap.AddDynamic(this, &APlatformSpawner::OnOverlapEnd);
 }
